@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:json_to_list_flutter/post.dart';
+import 'package:json_to_list_flutter/Model/post.dart';
+import 'package:json_to_list_flutter/View/loading_indicator.dart';
+import 'package:json_to_list_flutter/View/post_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
           future: postsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return const LoadingIndicator();
             } else if (snapshot.hasData) {
               final posts = snapshot.data!;
               return Column(
@@ -59,15 +62,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           const SizedBox(height: 20, width: double.infinity)),
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text('Your Title Here',
+                    child: Text('Photo Gallery',
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
                   ),
-                  Expanded(child: buildPosts(posts)),
-                  Container(
-                      color: const Color.fromARGB(0, 0, 0, 0),
-                      child:
-                          const SizedBox(height: 60, width: double.infinity)),
+                  Expanded(child: PostList(posts: posts))
                 ],
               );
             } else {
@@ -76,35 +75,6 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
       ),
-    );
-  }
-
-  Widget buildPosts(List<Post> posts) {
-    return ListView.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, index) {
-        final post = posts[index];
-        return Column(
-          children: [
-            Container(
-              color: const Color.fromARGB(0, 0, 0, 0),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    AspectRatio(
-                      aspectRatio: 16 / 9, // 替換為實際的寬高比
-                      child: Image.network(post.imageurl!),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(post.title!),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }
