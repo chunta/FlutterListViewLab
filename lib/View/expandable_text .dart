@@ -22,7 +22,7 @@ class _ExpandableTextState extends State<ExpandableText> {
         Text(
           widget.text,
           maxLines: _isExpanded ? null : widget.maxLines,
-          overflow: TextOverflow.ellipsis,
+          overflow: TextOverflow.fade,
         ),
         if (!_isExpanded)
           TextButton(
