@@ -1,17 +1,15 @@
 class Post {
-  int? albumId;
-  int? id;
+  String? id;
   String? title;
-  String? url;
-  String? thumbnailUrl;
+  String? imageurl;
+  String? description;
 
-  Post({this.albumId, this.id, this.title, this.url, this.thumbnailUrl});
+  Post({this.id, this.title, this.imageurl, this.description});
 
   Post.fromJson(Map<String, dynamic> json) {
-    albumId = json['albumId'];
     id = json['id'];
     title = json['title'];
-    url = json['url'];
-    thumbnailUrl = json['thumbnailUrl'];
+    imageurl = json['imgurl'];
+    description = json['des'];
   }
 }

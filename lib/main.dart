@@ -12,8 +12,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const MyHomePage(),
+    return const MaterialApp(
+      home: MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -30,9 +30,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<List<Post>> postsFuture = getPosts();
 
   static Future<List<Post>> getPosts() async {
-    var url = Uri.parse("https://jsonplaceholder.typicode.com/albums/1/photos");
-    final response = await http.get(url, headers: {"Content-Type": "application/json"});
-    final List body = json.decode(response.body);
+    var url = Uri.parse(
+        "https://dl.dropboxusercontent.com/s/zkvbrf79zuzqvjy/labmocklist.json");
+    final response =
+        await http.get(url, headers: {"Content-Type": "application/json"});
+    Map<String, dynamic> jsonMap = json.decode(response.body);
+    String contentString = json.encode(jsonMap['content']);
+    final List body = json.decode(contentString);
     return body.map((e) => Post.fromJson(e)).toList();
   }
 
@@ -47,7 +51,25 @@ class _MyHomePageState extends State<MyHomePage> {
               return const CircularProgressIndicator();
             } else if (snapshot.hasData) {
               final posts = snapshot.data!;
-              return buildPosts(posts);
+              return Column(
+                children: [
+                  Container(
+                      color: const Color.fromARGB(0, 0, 0, 0),
+                      child:
+                          const SizedBox(height: 20, width: double.infinity)),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Text('Your Title Here',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                  ),
+                  Expanded(child: buildPosts(posts)),
+                  Container(
+                      color: const Color.fromARGB(0, 0, 0, 0),
+                      child:
+                          const SizedBox(height: 60, width: double.infinity)),
+                ],
+              );
             } else {
               return const Text("No data available");
             }
@@ -62,19 +84,25 @@ class _MyHomePageState extends State<MyHomePage> {
       itemCount: posts.length,
       itemBuilder: (context, index) {
         final post = posts[index];
-        return Container(
-          color: Colors.grey.shade300,
-          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-          height: 100,
-          width: double.maxFinite,
-          child: Row(
-            children: [
-              Expanded(flex: 1, child: Image.network(post.url!)),
-              SizedBox(width: 10),
-              Expanded(flex: 3, child: Text(post.title!)),
-            ],
-          ),
+        return Column(
+          children: [
+            Container(
+              color: const Color.fromARGB(0, 0, 0, 0),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 16 / 9, // 替換為實際的寬高比
+                      child: Image.network(post.imageurl!),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(post.title!),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );
