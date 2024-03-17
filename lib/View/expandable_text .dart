@@ -19,10 +19,20 @@ class _ExpandableTextState extends State<ExpandableText> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          widget.text,
-          maxLines: _isExpanded ? null : widget.maxLines,
-          overflow: TextOverflow.fade,
+        GestureDetector(
+          onTap: () {
+            // Handle tap gesture here
+            if (_isExpanded) {
+              setState(() {
+                _isExpanded = false;
+              });
+            }
+          },
+          child: Text(
+            widget.text,
+            maxLines: _isExpanded ? null : widget.maxLines,
+            overflow: TextOverflow.fade,
+          ),
         ),
         if (!_isExpanded)
           TextButton(

@@ -1,12 +1,37 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:json_to_list_flutter/Model/post.dart';
 import 'package:json_to_list_flutter/View/loading_indicator.dart';
 import 'package:json_to_list_flutter/View/post_list.dart';
+import 'package:system_proxy/system_proxy.dart';
 
-void main() {
+class ProxiedHttpOverrides extends HttpOverrides {
+  ProxiedHttpOverrides(this._host, this._port);
+
+  String _port;
+  String _host;
+
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)
+      // set proxy
+      ..findProxy = (uri) {
+        return _host != null ? "PROXY $_host:$_port;" : 'DIRECT';
+      };
+  }
+}
+
+Future<void> main() async {
+  // add this, and it should be the first line in main method
+  WidgetsFlutterBinding.ensureInitialized(); 
+
+  Map<String, String>? proxy = await SystemProxy.getProxySettings();
+  proxy ??= {'host': '127.0.0.1', 'port': '8888'};
+  HttpOverrides.global = ProxiedHttpOverrides(proxy['host']!, proxy['port']!);
+ 
   runApp(const MyApp());
 }
 
@@ -19,6 +44,17 @@ class MyApp extends StatelessWidget {
       home: MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
+  }
+}
+
+class MyApp2 extends StatelessWidget {
+  const MyApp2({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: Container(
+      color: Colors.red,
+      child: const Text("123")) );
   }
 }
 
