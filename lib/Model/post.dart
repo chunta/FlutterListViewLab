@@ -3,6 +3,7 @@ class Post {
   String? title;
   String? imageurl;
   String? description;
+  bool expanded = false;
 
   Post({this.id, this.title, this.imageurl, this.description});
 
@@ -11,5 +12,6 @@ class Post {
     title = json['title'];
     imageurl = json['imgurl'];
     description = json['des'];
+    expanded = false;
   }
 }
